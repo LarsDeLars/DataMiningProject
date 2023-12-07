@@ -29,7 +29,7 @@ y_encoded = label_encoder.fit_transform(df['StyleSimple'])
 
 
 ############################# CREATING TEST/TRAIN SETS ###################################
-X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=40)
+X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=24)
 
 
 ############################# DECISION TREE CLASSIFIER MAX SPLIT CALCULATION ##################
@@ -44,32 +44,36 @@ for i in range(2,20):
     accuracy_list.append(accuracy_test)
     iS.append(i)
 
-print("Max accuracy: ", max(accuracy_list))
+# print("Max accuracy: ", max(accuracy_list))
+# plt.figure(figsize=(10,10))
+# plt.scatter(iS,accuracy_list)
+# plt.show()
+############################# OPTIMAL DEPTH DECISION TREE CLASSIFIER ################################
+accuracy_list2 = [] 
+depthList = []
+for depth in range(2,30):
+    dtc = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=5, max_depth=depth)
+    dtc = dtc.fit(X_train, y_train)
+
+    y_pred_test = dtc.predict(X_test)
+    accuracy_test = accuracy_score(y_test, y_pred_test)
+    accuracy_list2.append(accuracy_test)
+    depthList.append(depth)
+
+print("Optimal depth with accuracy: ", max(accuracy_list2))
 plt.figure(figsize=(10,10))
-plt.scatter(iS,accuracy_list)
+plt.scatter(depthList,accuracy_list2)
 plt.show()
 
 ############################# DECISION TREE CLASSIFIER ######################################
-
-dtc = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=5)
-dtc = dtc.fit(X_train, y_train)
-
 y_pred_test = dtc.predict(X_test)
 accuracy_test = accuracy_score(y_test, y_pred_test)
 
 
-# dtcR = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=100)
-# dtcR = dtcR.fit(X_train_r, y_train_r)
-
-# y_pred_test_r = dtcR.predict(X_test_r)
-
-# accuracy_testR = accuracy_score(y_test_r, y_pred_test_r)
-
-plt.figure(figsize=(20, 10))
-plot_tree(dtc, filled=True, feature_names=attribute_names, class_names=label_encoder.classes_)
-plt.show()
+# plt.figure(figsize=(20, 10))
+# plot_tree(dtc, filled=True, feature_names=attribute_names, class_names=label_encoder.classes_)
+# plt.show()
 
 
 
 
-# print("Test Set No Review Accuracy: ", accuracy_testR)
