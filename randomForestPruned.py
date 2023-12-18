@@ -30,11 +30,11 @@ label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(df['StyleSimple'])
 accuracy_list = []
 
-for k in range(1,20):
+for k in range(0,20):
     print(k)
     X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=k)
 
-    rfc = RandomForestClassifier(max_depth=17, random_state=0)
+    rfc = RandomForestClassifier(max_depth=17, random_state=0, bootstrap=False)
     rfc.fit(X_train, y_train)
 
     predictions = rfc.predict(X_test)
@@ -46,7 +46,7 @@ for k in range(1,20):
 print("Average accuracy = ", sum(accuracy_list) / len(accuracy_list))
 
 # max depth chosen by getting the average max_depth of 19 random_states
-  
+# bootstrap = False works better than bootstrap = True
 
 
 
