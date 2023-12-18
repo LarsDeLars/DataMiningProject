@@ -30,26 +30,39 @@ label_encoder = LabelEncoder()
 
 y_encoded = label_encoder.fit_transform(df['StyleSimple'])
 
-X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=24)
+X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=1)
 
 accuracy_list = []
+accuracy_listB = []
 depthList = [] 
-for depth in range(2,20):
-    rfc = RandomForestClassifier(max_depth=depth, random_state=0)
+for depth in range(20,30):
+    rfcB = RandomForestClassifier(max_depth=depth, random_state=1)
+    rfcB.fit(X_train, y_train)
+
+    predictionsB = rfcB.predict(X_test)
+
+    accuracyB = accuracy_score(y_test, predictionsB)
+
+    rfc = RandomForestClassifier(max_depth=depth, random_state=1,bootstrap=False)
     rfc.fit(X_train, y_train)
 
     predictions = rfc.predict(X_test)
 
     accuracy = accuracy_score(y_test, predictions)
+
     accuracy_list.append(accuracy)
+    accuracy_listB.append(accuracyB)
     depthList.append(depth)
 
-print("Max accuracy: ", max(accuracy_list))
+print("Max accuracy no bootstrap: ", max(accuracy_list))
+print("Max accuracy with bootstrap: ", max(accuracy_listB))
 plt.figure(figsize=(10,10))
 plt.scatter(depthList,accuracy_list)
+plt.scatter(depthList, accuracy_listB)
 plt.show()
 
-
+# CONCLUSION:
+# NO BOOTSTRAP IS BETTER
 
 
 

@@ -9,6 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
+
 #############################IMPORTING DATA ##############################################
 
 df = pd.read_csv('./data/beer_profile_and_ratings.csv', sep=',', header=0)
