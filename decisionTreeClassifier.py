@@ -77,40 +77,40 @@ for random_state in range(1,15):
     total_depths.append(max_depth)
 
 
-    ############################ POST PRUNING ###################################################
 
-    path = dtc.cost_complexity_pruning_path(X_train, y_train)
-    ccp_alphas, impurities = path.ccp_alphas, path.impurities
-
-
-    clfs = []
-    for ccp_alpha in ccp_alphas:
-        clf = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=min_split,max_depth=max_depth, ccp_alpha=ccp_alpha, random_state=random_state)
-        clf.fit(X_train, y_train)
-        clfs.append(clf)
-
-    accuracies = [clf.score(X_test, y_test) for clf in clfs]
-    optimal_alpha = ccp_alphas[accuracies.index(max(accuracies))]
-
-    pruned_clf = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=min_split, max_depth=max_depth, ccp_alpha=optimal_alpha, random_state=random_state)
-
-    pruned_clf.fit(X_train, y_train)
-
-    # Evaluate the accuracy on the test set after pruning
-    accuracy_after_pruning = pruned_clf.score(X_test, y_test)
-    # print(f'Accuracy after pruning: {accuracy_after_pruning:.4f}')
-
-    total_prune.append(optimal_alpha)
-
-mean_split = np.mean(total_splits)
-mean_depth = np.mean(total_depths)
-mean_prune = np.mean(total_prune)
+mean_split = int(np.mean(total_splits))
+mean_depth = int(np.mean(total_depths))
 
 print("Mean Split:", mean_split)
 print("Mean Depth:", mean_depth)
-print("Mean Prune:", mean_prune)
 
-fdtc = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=mean_split, max_depth=mean_depth, ccp_alpha=mean_prune)
+    ############################ POST PRUNING ###################################################
+
+    
+
+fdtc = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=int(mean_split), max_depth=int(mean_depth))
+fdtc.fit(X_train, y_train)
 score = fdtc.score(X_test, y_test)
-print("Final accuracy: ", score )
+print("Pre prune score: ", score)
+
+path = fdtc.cost_complexity_pruning_path(X_train, y_train)
+ccp_alphas, impurities = path.ccp_alphas, path.impurities
+
+
+clfs = []
+for ccp_alpha in ccp_alphas:
+    clf = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=mean_split,max_depth=mean_depth, ccp_alpha=ccp_alpha, random_state=random_state)
+    clf.fit(X_train, y_train)
+    clfs.append(clf)
+
+accuracies = [clf.score(X_test, y_test) for clf in clfs]
+optimal_alpha = ccp_alphas[accuracies.index(max(accuracies))]
+
+pruned_clf = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=mean_split, max_depth=mean_depth, ccp_alpha=optimal_alpha, random_state=random_state)
+
+pruned_clf.fit(X_train, y_train)
+
+# Evaluate the accuracy on the test set after pruning
+accuracy_after_pruning = pruned_clf.score(X_test, y_test)
+print(f'Accuracy after pruning: {accuracy_after_pruning:.4f}')
 
