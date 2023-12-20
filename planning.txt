@@ -1,0 +1,11 @@
+A descriptive title.
+An abstract [about 100 words] that summarizes the research problem, approach/method, and main results. In the body of the report, you should explain clearly, in the following order:
+    related previous work that attempted to address the same or a similar problem;
+    the application domain and the research problem;
+    your approach/method[s] and, equally important, the rationale behind your decisions;
+    your data set and data collection, preprocessing methods;
+    the main results and insights of your project;
+    an analysis of results and evaluation of your project outcome: to what extent it matches your expectation and why if there is a gap;
+    give us insight into the code that you used to generate the results, e.g., by explaining the main parts in an appendix of the report, adding your code [e.g. a Jupyter notebook] to your Brightspace submission, and/or providing a link to your Github page in the report.
+    possible future directions to improve the results;
+

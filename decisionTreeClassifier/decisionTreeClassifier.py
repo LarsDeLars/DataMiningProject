@@ -39,10 +39,11 @@ total_splits = []
 total_depths = [] 
 total_prune = []
 for random_state in range(1,15):
+    X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=random_state)
     min_split_accuracy_list = [] 
     split_list = []
     for split in range(2,20):
-        dtc = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=split, random_state=random_state)
+        dtc = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=split, random_state=1)
         dtc = dtc.fit(X_train, y_train)
 
         y_pred_test = dtc.predict(X_test)
@@ -61,7 +62,7 @@ for random_state in range(1,15):
     max_depth_list = []
     depthList = []
     for depth in range(2,30):
-        dtc = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=min_split, max_depth=depth, random_state=random_state)
+        dtc = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=min_split, max_depth=depth, random_state=1)
         dtc = dtc.fit(X_train, y_train)
 
         y_pred_test = dtc.predict(X_test)
@@ -88,7 +89,7 @@ print("Mean Depth:", mean_depth)
 
     
 
-fdtc = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=int(mean_split), max_depth=int(mean_depth))
+fdtc = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=int(mean_split), max_depth=int(mean_depth), random_state=1)
 fdtc.fit(X_train, y_train)
 score = fdtc.score(X_test, y_test)
 print("Pre prune score: ", score)
@@ -99,14 +100,14 @@ ccp_alphas, impurities = path.ccp_alphas, path.impurities
 
 clfs = []
 for ccp_alpha in ccp_alphas:
-    clf = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=mean_split,max_depth=mean_depth, ccp_alpha=ccp_alpha, random_state=random_state)
+    clf = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=mean_split,max_depth=mean_depth, ccp_alpha=ccp_alpha, random_state=1)
     clf.fit(X_train, y_train)
     clfs.append(clf)
 
 accuracies = [clf.score(X_test, y_test) for clf in clfs]
 optimal_alpha = ccp_alphas[accuracies.index(max(accuracies))]
 
-pruned_clf = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=mean_split, max_depth=mean_depth, ccp_alpha=optimal_alpha, random_state=random_state)
+pruned_clf = tree.DecisionTreeClassifier(criterion="gini", min_samples_split=mean_split, max_depth=mean_depth, ccp_alpha=optimal_alpha, random_state=1)
 
 pruned_clf.fit(X_train, y_train)
 
