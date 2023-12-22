@@ -26,8 +26,8 @@ label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(df['StyleSimple'])
 
 # These are the optimal values we found in dtcSplit.py and dtcDepth.py. 
-split = 5
-depth = 13
+split = 3
+depth = 17
 # Create a train and test set. 
 X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=1)
 
@@ -50,7 +50,7 @@ for ccp_alpha in ccp_alphas:
         # Create a (new) random train/test set. 
         X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=i)
         # Create the decision tree
-        dtc = tree.DecisionTreeClassifier(criterion="gini",min_samples_split=split, max_depth=depth,ccp_alpha=ccp_alpha, random_state=1)
+        dtc = tree.DecisionTreeClassifier(criterion="gini",min_samples_split=split, max_depth=depth,ccp_alpha=ccp_alpha, random_state=0)
         dtc = dtc.fit(X_train, y_train)
 
         # Predict the test set and add it to the list. 

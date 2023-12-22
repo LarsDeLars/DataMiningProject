@@ -39,7 +39,7 @@ runs = 50
 accuracy_rfc = []
 for state in range(1, runs):
     # Create a (new) random train/test set. 
-    X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.5, random_state=state)
+    X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=state)
     # Create the random forest
     rfc = RandomForestClassifier(criterion="gini", bootstrap=bootstrap, max_depth=depthRFC, random_state=0)
     rfc = rfc.fit(X_train, y_train)

@@ -30,9 +30,9 @@ label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(df['StyleSimple'])
 
 # These are the optimal values we found in dtcDepth.py dtcSplit.py and dtcPrune.py
-splitDTC = 5
-depthDTC = 13
-ccp_alpha = 0.0007361568013986981
+splitDTC = 3
+depthDTC = 17
+ccp_alpha = 0.00037478816321209773
 
 # The amount of times we want to run the classifier on different train/test sets. 
 runs = 50
@@ -40,7 +40,7 @@ runs = 50
 accuracy_dtc = []
 for state in range(1, runs):
     # Create a (new) random train/test set. 
-    X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.5, random_state=state)
+    X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=state)
     # Create the decision tree
     dtc = tree.DecisionTreeClassifier(criterion="gini", max_depth=depthDTC, random_state=0, min_samples_split=splitDTC, ccp_alpha=ccp_alpha)
     dtc = dtc.fit(X_train, y_train)
