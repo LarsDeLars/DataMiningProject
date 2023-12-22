@@ -28,22 +28,55 @@ df['StyleSimple'] = df['Style'].map(style_mapping)
 label_encoder = LabelEncoder()
 
 y_encoded = label_encoder.fit_transform(df['StyleSimple'])
+accuracyB_list = []
 accuracy_list = []
+
 
 for k in range(0,20):
     print(k)
     X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=k)
 
-    rfc = RandomForestClassifier(max_depth=17, random_state=0, bootstrap=False)
+    rfc = RandomForestClassifier(random_state=0, bootstrap=False)
     rfc.fit(X_train, y_train)
 
     predictions = rfc.predict(X_test)
 
     accuracy = accuracy_score(y_test, predictions)
     accuracy_list.append(accuracy)
-    print("Accuracy = ",accuracy)
+    # print("Accuracy = ",accuracy)
 
-print("Average accuracy = ", sum(accuracy_list) / len(accuracy_list))
+
+for k in range(0,20):
+    print(k)
+    X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=k)
+
+    rfc = RandomForestClassifier(random_state=0, bootstrap=True)
+    rfc.fit(X_train, y_train)
+
+    predictions = rfc.predict(X_test)
+
+    accuracy = accuracy_score(y_test, predictions)
+    accuracyB_list.append(accuracy)
+    # print("Accuracy = ",accuracy)
+
+# fig, ax = plt.subplots()
+
+# fruits = ['Bootstrap', 'No Bootstrap']
+counts = [np.mean(accuracyB_list), np.mean(accuracy_list)]
+# bar_labels = ['Bootstrap', 'No Bootstrap']
+# bar_colors = ['tab:blue', 'tab:orange']
+
+# ax.bar(fruits, counts, label=bar_labels, color=bar_colors)
+
+# ax.set_ylabel("Average accuracy")
+# ax.set_title("Bootstrap vs No Bootstrap")
+
+# plt.savefig("boobtrap.jpg", bbox_inches="tight", dpi=300)
+
+# plt.show()
+
+
+print(counts)
 
 # max depth chosen by getting the average max_depth of 19 random_states
 # bootstrap = False works better than bootstrap = True

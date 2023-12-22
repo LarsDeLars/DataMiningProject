@@ -9,6 +9,9 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
+from sklearn.ensemble import RandomForestClassifier
+
+
 #############################IMPORTING DATA ##############################################
 
 df = pd.read_csv('./data/beer_profile_and_ratings.csv', sep=',', header=0)
@@ -28,33 +31,38 @@ label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(df['StyleSimple'])
 
 
-############################# CREATING TEST/TRAIN SETS ###################################
-max_depth_list = []
-for depth in range(1, 25):
-    current_depths = [] 
-    for i in range(1,15):
-        X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=i)
-        dtc = tree.DecisionTreeClassifier(criterion="gini", max_depth=depth, random_state=1)
-        dtc = dtc.fit(X_train, y_train)
+accuracy_list = []
+for depth in range(1,30):
+    accuracys = [] 
+    for state in range(1,10):
+        X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=state)
+        rfc = RandomForestClassifier(max_depth=depth, random_state=1)
+        rfc.fit(X_train, y_train)
 
-        y_pred_test = dtc.predict(X_test)
-        accuracy_test = accuracy_score(y_test, y_pred_test)
-        current_depths.append(accuracy_test)
-    max_depth_list.append(np.mean(current_depths))
+        predictionsB = rfc.predict(X_test)
+
+        accuracy = accuracy_score(y_test, predictionsB)
+
+        predictions = rfc.predict(X_test)
+
+        accuracys.append(accuracy)
+    accuracy_list.append(np.mean(accuracys))
     
+print(max(accuracy_list),accuracy_list.index(max(accuracy_list)))
 
-print("Optimal depth with accuracy: ", max(max_depth_list))
+plt.figure(figsize=(5,5))
+plt.scatter(list(range(1,30)),accuracy_list)
+plt.plot(list(range(1,30)),accuracy_list)
 
-plt.figure(figsize=(10,10))
-plt.scatter(list(range(1, 25)), max_depth_list)
-plt.plot(list(range(1, 25)),max_depth_list)
-
-plt.title("Finding Max Depth")
+plt.title("Finding max_depth")
 plt.xlabel("max_depth")
 plt.ylabel("Average accuracy")
 
-# plt.savefig("max_depth.jpg", bbox_inches="tight", dpi=300)
+plt.savefig("deep forest.jpg", bbox_inches="tight", dpi=300)
+
 
 plt.show()
+
+
 
 
